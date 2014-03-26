@@ -12,9 +12,13 @@ import java.util.List;
  */
 public class Node {
 
+	public enum State {
+		UNVIISTED, VISITING, VISITED;
+	}
+
 	protected String name;
 	protected List<Edge> E;
-	int state;
+	State state;
 
 	public Node(String name) {
 		this.name = name;
@@ -22,10 +26,55 @@ public class Node {
 		E = new ArrayList<Edge>();
 	}
 
-}
+	public Node(String name, Edge e) {
+		this(name);
+		this.E.add(e);
+	}
 
-interface State {
-	int UNVIISTED = 0;
-	int VISITING = 1;
-	int VISITED = 2;
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the state
+	 */
+	public State getState() {
+		return state;
+	}
+
+	/**
+	 * @param state
+	 *            the state to set
+	 */
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	/**
+	 * 
+	 * @param e
+	 */
+	public void addEdge(Edge e) {
+		this.E.add(e);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Edge> getEdges() {
+		return this.E;
+	}
+
 }
