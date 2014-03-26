@@ -19,7 +19,7 @@ public class Node {
 	public Node(String name) {
 		this.name = name;
 		state = State.UNVIISTED;
-		E = new ArrayList<>();
+		E = new ArrayList<Edge>();
 	}
 
 }
