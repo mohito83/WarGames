@@ -3,18 +3,17 @@
  */
 package edu.usc.csci561.data;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author mohit aggarwl
  * 
  */
-public abstract class Player {
+public abstract class Player implements Runnable {
 
 	private String name;
 	private Color color;
-	private List<City> cities;
+
+	// private List<City> cities;
 
 	public Player() {
 		this(Color.RED);
@@ -22,7 +21,7 @@ public abstract class Player {
 
 	public Player(Color c) {
 		this.color = c;
-		cities = new ArrayList<City>();
+		// cities = new ArrayList<City>();
 	}
 
 	/**
@@ -55,17 +54,12 @@ public abstract class Player {
 		this.color = color;
 	}
 
-	public void addCity(City c) {
-		this.cities.add(c);
-	}
-
-	public boolean containsCity(City c) {
-		return this.cities.contains(c);
-	}
-
-	public boolean removeCity(City c) {
-		return this.cities.remove(c);
-	}
-
+	/*
+	 * public void addCity(City c) { this.cities.add(c); }
+	 * 
+	 * public boolean containsCity(City c) { return this.cities.contains(c); }
+	 * 
+	 * public boolean removeCity(City c) { return this.cities.remove(c); }
+	 */
 	public abstract void calculateNextStep();
 }
