@@ -13,8 +13,9 @@ import java.util.Map;
 import edu.usc.csci561.data.City;
 import edu.usc.csci561.data.Color;
 import edu.usc.csci561.data.Edge;
+import edu.usc.csci561.data.GameState;
+import edu.usc.csci561.data.Occupation;
 import edu.usc.csci561.data.Player;
-import edu.usc.csci561.data.City.Occupation;
 
 /**
  * This is the main class for CSCI561 Assignment -3 : Adversarial Search
@@ -34,19 +35,23 @@ public class WarSimulationGame {
 
 	private static Map<String, City> nodeMap = new HashMap<String, City>();
 
+	private static GameState gameState;
+
 	// Graph related instance variables
 
 	/**
 	 * @param args
+	 * 
 	 */
 	public static void main(String[] args) {
 		Player union = new UnionPlayer(Color.RED);
 		Player confed = new ConfederationPlayer(Color.BLUE);
+		gameState = GameState.getInstance();
 
 		parseCommandLine(args);
 
 		((UnionPlayer) union).setCutoffLevel(cutOffDepth);
-		((UnionPlayer) union).setPrunning(task == 3);
+		((UnionPlayer) union).setSearch(task);
 
 		parseMapFile(mapFile);
 
@@ -75,16 +80,17 @@ public class WarSimulationGame {
 				switch (Integer.parseInt(tokens[2])) {
 				case -1:
 					c.setOccupation(Occupation.CONFEDERATE);
-					confed.addCity(c);
+					// confed.addCity(c);
 					break;
 				case 0:
 					c.setOccupation(Occupation.NEUTRAL);
 					break;
 				case 1:
 					c.setOccupation(Occupation.UNION);
-					union.addCity(c);
+					// union.addCity(c);
 					break;
 				}
+				gameState.addCity(c);
 			}
 		} catch (IOException e) {
 			System.out

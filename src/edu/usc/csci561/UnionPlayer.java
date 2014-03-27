@@ -12,17 +12,31 @@ import edu.usc.csci561.data.Player;
  */
 public class UnionPlayer extends Player {
 
+	public enum SearchAlgo {
+		GREEDY(1), MINIMAX(2), ALPHA_BETA_PRUNNING(3);
+		int val;
+
+		private SearchAlgo(int val) {
+			this.val = val;
+		}
+
+		public int getValue() {
+			return this.val;
+		}
+
+	};
+
 	private int cutoffLevel;
-	private boolean isPrunning;
+	private SearchAlgo search;
 
 	public UnionPlayer(Color red) {
 		super(red);
 	}
 
-	public UnionPlayer(Color c, int cutOff, boolean prunning) {
+	public UnionPlayer(Color c, int cutOff, SearchAlgo search) {
 		this(c);
 		this.cutoffLevel = cutOff;
-		this.isPrunning = prunning;
+		this.search = search;
 	}
 
 	@Override
@@ -39,24 +53,42 @@ public class UnionPlayer extends Player {
 	}
 
 	/**
-	 * @param cutoffLevel the cutoffLevel to set
+	 * @param cutoffLevel
+	 *            the cutoffLevel to set
 	 */
 	public void setCutoffLevel(int cutoffLevel) {
 		this.cutoffLevel = cutoffLevel;
 	}
 
 	/**
-	 * @return the isPrunning
+	 * @return the search
 	 */
-	public boolean isPrunning() {
-		return isPrunning;
+	public SearchAlgo getSearch() {
+		return search;
 	}
 
 	/**
-	 * @param isPrunning the isPrunning to set
+	 * @param search
+	 *            the search to set
 	 */
-	public void setPrunning(boolean isPrunning) {
-		this.isPrunning = isPrunning;
+	public void setSearch(int search) {
+		switch (search) {
+		case 1:
+			this.search = SearchAlgo.GREEDY;
+			break;
+		case 2:
+			this.search = SearchAlgo.MINIMAX;
+			break;
+		case 3:
+			this.search = SearchAlgo.ALPHA_BETA_PRUNNING;
+			break;
+		}
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
