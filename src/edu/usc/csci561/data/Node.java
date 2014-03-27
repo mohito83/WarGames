@@ -20,6 +20,10 @@ public class Node {
 	protected List<Edge> E;
 	State state;
 
+	public Node() {
+		this(null);
+	}
+
 	public Node(String name) {
 		this.name = name;
 		state = State.UNVIISTED;
@@ -77,4 +81,8 @@ public class Node {
 		return this.E;
 	}
 
+	public void addEdge(Node n){
+		Edge e = new Edge(this,n);
+		this.E.add(e);
+	}
 }

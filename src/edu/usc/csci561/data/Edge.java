@@ -13,4 +13,10 @@ public class Edge {
 	public Edge(int size) {
 		nodes = new Node[size];
 	}
+
+	public Edge(Node a, Node b) {
+		nodes = new Node[2];
+		nodes[0] = a;
+		nodes[1] = b;
+	}
 }
