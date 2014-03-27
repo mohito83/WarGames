@@ -6,6 +6,7 @@ package edu.usc.csci561;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +56,79 @@ public class WarSimulationGame {
 
 		parseMapFile(mapFile);
 
-		parseInitFile(initFile, union, confed);
+		parseInitFile(initFile);
+
+		// initial print
+		try {
+			FileWriter logsWriter = new FileWriter(new File(outputLog));
+			FileWriter movesWriter = new FileWriter(new File(outputPath));
+			union.setLogWriter(logsWriter);
+			union.setMovesWriter(movesWriter);
+			confed.setLogWriter(logsWriter);
+			confed.setMovesWriter(movesWriter);
+			logsWriter.write("Player,Action,Destination,Depth,Value");
+			logsWriter.write(System.getProperty("line.separator"));
+			StringBuffer buff = new StringBuffer();
+			buff.append("TURN = 0");
+			buff.append(System.getProperty("line.separator"));
+			buff.append("Player = N/A");
+			buff.append(System.getProperty("line.separator"));
+			buff.append("Action = N/A");
+			buff.append(System.getProperty("line.separator"));
+			buff.append("Destination = N/A");
+			buff.append(System.getProperty("line.separator"));
+			buff.append("Union,{");
+			int i = 0;
+			double sum = 0.0;
+			for (City c : gameState.getUnionCities()) {
+				sum += c.getValue();
+				buff.append(c.getName());
+				if (i < gameState.getUnionCities().size()) {
+					buff.append(",");
+				}
+				i++;
+			}
+			buff.append("},");
+			buff.append(sum);
+
+			buff.append(System.getProperty("line.separator"));
+			buff.append("Confederacy,{");
+			i = 0;
+			sum = 0.0;
+			for (City c : gameState.getConfederateCities()) {
+				sum += c.getValue();
+				buff.append(c.getName());
+				if (i < gameState.getConfederateCities().size()) {
+					buff.append(",");
+				}
+				i++;
+			}
+			buff.append("},");
+			buff.append(sum);
+			buff.append(System.getProperty("line.separator"));
+			buff.append("--------------------------------------------------------------");
+			movesWriter.write(buff.toString());
+			movesWriter.write(System.getProperty("line.separator"));
+
+		} catch (IOException e1) {
+			System.out
+					.println("Exception occurred while writing to log files - "
+							+ e1.getMessage());
+		}
+
+		gameState.setPlayer(union);
+
+		Thread unionThread = new Thread(union);
+		Thread confedThread = new Thread(confed);
+		unionThread.start();
+		confedThread.start();
+
+		try {
+			unionThread.join();
+			confedThread.join();
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	/**
@@ -63,11 +136,8 @@ public class WarSimulationGame {
 	 * fields of the city
 	 * 
 	 * @param initFile2
-	 * @param confed
-	 * @param union
 	 */
-	private static void parseInitFile(String initFile2, Player union,
-			Player confed) {
+	private static void parseInitFile(String initFile2) {
 		File f = new File(initFile2);
 		BufferedReader reader = null;
 		try {
@@ -80,14 +150,12 @@ public class WarSimulationGame {
 				switch (Integer.parseInt(tokens[2])) {
 				case -1:
 					c.setOccupation(Occupation.CONFEDERATE);
-					// confed.addCity(c);
 					break;
 				case 0:
 					c.setOccupation(Occupation.NEUTRAL);
 					break;
 				case 1:
 					c.setOccupation(Occupation.UNION);
-					// union.addCity(c);
 					break;
 				}
 				gameState.addCity(c);

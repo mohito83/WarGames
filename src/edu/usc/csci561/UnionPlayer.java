@@ -4,6 +4,7 @@
 package edu.usc.csci561;
 
 import edu.usc.csci561.data.Color;
+import edu.usc.csci561.data.GameState;
 import edu.usc.csci561.data.Player;
 
 /**
@@ -87,8 +88,12 @@ public class UnionPlayer extends Player {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
+		GameState state = GameState.getInstance();
+		synchronized (state) {
+			while (!state.isNoMoreMoves()) {
+
+			}
+		}
 	}
 
 }

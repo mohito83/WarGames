@@ -3,6 +3,8 @@
  */
 package edu.usc.csci561.data;
 
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * @author mohit aggarwl
@@ -12,6 +14,8 @@ public abstract class Player implements Runnable {
 
 	private String name;
 	private Color color;
+	private FileWriter logWriter;
+	private FileWriter movesWriter;
 
 	// private List<City> cities;
 
@@ -62,4 +66,40 @@ public abstract class Player implements Runnable {
 	 * public boolean removeCity(City c) { return this.cities.remove(c); }
 	 */
 	public abstract void calculateNextStep();
+
+	public void printLogs(String str) throws IOException {
+		logWriter.write(str);
+	}
+
+	public void printMoves(String str) throws IOException {
+		movesWriter.write(str);
+	}
+
+	/**
+	 * @return the logWriter
+	 */
+	public FileWriter getLogWriter() {
+		return logWriter;
+	}
+
+	/**
+	 * @param logWriter the logWriter to set
+	 */
+	public void setLogWriter(FileWriter logWriter) {
+		this.logWriter = logWriter;
+	}
+
+	/**
+	 * @return the movesWriter
+	 */
+	public FileWriter getMovesWriter() {
+		return movesWriter;
+	}
+
+	/**
+	 * @param movesWriter the movesWriter to set
+	 */
+	public void setMovesWriter(FileWriter movesWriter) {
+		this.movesWriter = movesWriter;
+	}
 }
