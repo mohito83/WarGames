@@ -116,18 +116,23 @@ public class WarSimulationGame {
 							+ e1.getMessage());
 		}
 
-		gameState.setPlayer(union);
+		gameState.setPlayer(Color.RED);
 
-		Thread unionThread = new Thread(union);
-		Thread confedThread = new Thread(confed);
-		unionThread.start();
-		confedThread.start();
-
-		try {
-			unionThread.join();
-			confedThread.join();
-		} catch (InterruptedException e) {
-			System.out.println(e.getMessage());
+		/*
+		 * Thread unionThread = new Thread(union); Thread confedThread = new
+		 * Thread(confed); unionThread.start(); confedThread.start();
+		 * 
+		 * try { unionThread.join(); confedThread.join(); } catch
+		 * (InterruptedException e) { System.out.println(e.getMessage()); }
+		 */
+		long i = 2L;
+		while (!gameState.isNoMoreMoves()) {
+			if (i % 2 == 0) {
+				union.nextMove();
+			} else {
+				confed.nextMove();
+			}
+			i++;
 		}
 	}
 

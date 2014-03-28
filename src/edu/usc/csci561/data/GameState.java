@@ -18,7 +18,7 @@ public class GameState {
 	private List<City> cities;
 	private int turn;
 	private Action action;
-	private Player player;
+	private Color player;
 	private String destination;
 
 	private GameState() {
@@ -138,7 +138,7 @@ public class GameState {
 	/**
 	 * @return the player
 	 */
-	public Player getPlayer() {
+	public Color getPlayer() {
 		return player;
 	}
 
@@ -146,7 +146,7 @@ public class GameState {
 	 * @param player
 	 *            the player to set
 	 */
-	public void setPlayer(Player player) {
+	public void setPlayer(Color player) {
 		this.player = player;
 	}
 

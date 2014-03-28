@@ -4,7 +4,6 @@
 package edu.usc.csci561;
 
 import edu.usc.csci561.data.Color;
-import edu.usc.csci561.data.GameState;
 import edu.usc.csci561.data.Player;
 
 /**
@@ -41,9 +40,18 @@ public class UnionPlayer extends Player {
 	}
 
 	@Override
-	public void calculateNextStep() {
-		// TODO Auto-generated method stub
+	public void nextMove() {
+		System.out.println("Union Player");
+		switch (search.getValue()) {
+		case 0:
+			greedyEvaluation();
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
 
+		}
 	}
 
 	/**
@@ -86,14 +94,12 @@ public class UnionPlayer extends Player {
 		}
 	}
 
-	@Override
-	public void run() {
-		GameState state = GameState.getInstance();
-		synchronized (state) {
-			while (!state.isNoMoreMoves()) {
-
-			}
-		}
-	}
+	/*
+	 * @Override public void run() { GameState state = GameState.getInstance();
+	 * synchronized (state) { while (!state.isNoMoreMoves() && state.getPlayer()
+	 * == Color.RED) { calculateNextStep(); // TODO take actions
+	 * state.setPlayer(Color.BLUE); try { state.wait(); } catch
+	 * (InterruptedException e) { System.out.println(e.getMessage()); } } } }
+	 */
 
 }

@@ -5,12 +5,15 @@ package edu.usc.csci561.data;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+
+import edu.usc.csci561.UnionPlayer;
 
 /**
  * @author mohit aggarwl
  * 
  */
-public abstract class Player implements Runnable {
+public abstract class Player {// implements Runnable {
 
 	private String name;
 	private Color color;
@@ -65,7 +68,7 @@ public abstract class Player implements Runnable {
 	 * 
 	 * public boolean removeCity(City c) { return this.cities.remove(c); }
 	 */
-	public abstract void calculateNextStep();
+	public abstract void nextMove();
 
 	public void printLogs(String str) throws IOException {
 		logWriter.write(str);
@@ -83,7 +86,8 @@ public abstract class Player implements Runnable {
 	}
 
 	/**
-	 * @param logWriter the logWriter to set
+	 * @param logWriter
+	 *            the logWriter to set
 	 */
 	public void setLogWriter(FileWriter logWriter) {
 		this.logWriter = logWriter;
@@ -97,9 +101,29 @@ public abstract class Player implements Runnable {
 	}
 
 	/**
-	 * @param movesWriter the movesWriter to set
+	 * @param movesWriter
+	 *            the movesWriter to set
 	 */
 	public void setMovesWriter(FileWriter movesWriter) {
 		this.movesWriter = movesWriter;
+	}
+
+	/*
+	 * public void doNotify() { GameState state = GameState.getInstance();
+	 * synchronized (state) { state.notify(); } }
+	 */
+
+	protected void greedyEvaluation() {
+		GameState state = GameState.getInstance();
+		List<City> cities = null;
+		if (this instanceof UnionPlayer) {
+			cities = state.getUnionCities();
+		} else {
+			cities = state.getConfederateCities();
+		}
+		
+		for(City c : cities){
+			c.getEdges();
+		}
 	}
 }
