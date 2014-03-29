@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,9 +61,11 @@ public class WarSimulationGame {
 		parseInitFile(initFile);
 
 		// initial print
+		FileWriter logsWriter = null;
+		FileWriter movesWriter = null;
 		try {
-			FileWriter logsWriter = new FileWriter(new File(outputLog));
-			FileWriter movesWriter = new FileWriter(new File(outputPath));
+			logsWriter = new FileWriter(new File(outputLog));
+			movesWriter = new FileWriter(new File(outputPath));
 			union.setLogWriter(logsWriter);
 			union.setMovesWriter(movesWriter);
 			confed.setLogWriter(logsWriter);
@@ -116,15 +120,14 @@ public class WarSimulationGame {
 							+ e1.getMessage());
 		}
 
-		gameState.setPlayer(Color.RED);
+		Collections.sort(gameState.getAllCities(), new Comparator<City>() {
 
-		/*
-		 * Thread unionThread = new Thread(union); Thread confedThread = new
-		 * Thread(confed); unionThread.start(); confedThread.start();
-		 * 
-		 * try { unionThread.join(); confedThread.join(); } catch
-		 * (InterruptedException e) { System.out.println(e.getMessage()); }
-		 */
+			@Override
+			public int compare(City o1, City o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+
 		long i = 2L;
 		while (!gameState.isNoMoreMoves()) {
 			if (i % 2 == 0) {
@@ -133,6 +136,15 @@ public class WarSimulationGame {
 				confed.nextMove();
 			}
 			i++;
+		}
+
+		if (logsWriter != null && movesWriter != null) {
+			try {
+				logsWriter.close();
+				movesWriter.close();
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
+			}
 		}
 	}
 

@@ -81,8 +81,21 @@ public class Node {
 		return this.E;
 	}
 
-	public void addEdge(Node n){
-		Edge e = new Edge(this,n);
+	/**
+	 * This method calculates and return the adjacency list of this node.
+	 * 
+	 * @return
+	 */
+	public List<Node> getAdjacencyList() {
+		List<Node> adjList = new ArrayList<Node>();
+		for (Edge e : E) {
+			adjList.add(e.getOtherEndofEdge(this));
+		}
+		return adjList;
+	}
+
+	public void addEdge(Node n) {
+		Edge e = new Edge(this, n);
 		this.E.add(e);
 	}
 }

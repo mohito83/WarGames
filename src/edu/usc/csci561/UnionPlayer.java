@@ -31,6 +31,7 @@ public class UnionPlayer extends Player {
 
 	public UnionPlayer(Color red) {
 		super(red);
+		name = "Union";
 	}
 
 	public UnionPlayer(Color c, int cutOff, SearchAlgo search) {
@@ -43,12 +44,12 @@ public class UnionPlayer extends Player {
 	public void nextMove() {
 		System.out.println("Union Player");
 		switch (search.getValue()) {
-		case 0:
+		case 1:
 			greedyEvaluation();
 			break;
-		case 1:
-			break;
 		case 2:
+			break;
+		case 3:
 			break;
 
 		}
@@ -93,13 +94,5 @@ public class UnionPlayer extends Player {
 			break;
 		}
 	}
-
-	/*
-	 * @Override public void run() { GameState state = GameState.getInstance();
-	 * synchronized (state) { while (!state.isNoMoreMoves() && state.getPlayer()
-	 * == Color.RED) { calculateNextStep(); // TODO take actions
-	 * state.setPlayer(Color.BLUE); try { state.wait(); } catch
-	 * (InterruptedException e) { System.out.println(e.getMessage()); } } } }
-	 */
 
 }

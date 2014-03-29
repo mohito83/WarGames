@@ -8,15 +8,18 @@ package edu.usc.csci561.data;
  * 
  */
 public class Edge {
-	protected Node[] nodes;
-
-	public Edge(int size) {
-		nodes = new Node[size];
-	}
+	protected Node a, b;
 
 	public Edge(Node a, Node b) {
-		nodes = new Node[2];
-		nodes[0] = a;
-		nodes[1] = b;
+		this.a = a;
+		this.b = b;
+	}
+
+	public Node getOtherEndofEdge(Node x) {
+		if (x == a) {
+			return b;
+		} else {
+			return a;
+		}
 	}
 }

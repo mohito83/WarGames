@@ -12,14 +12,11 @@ import java.util.List;
  * @author mohit aggarwl
  * 
  */
-public class GameState {
+public class GameState implements Cloneable {
 
 	private static GameState state;
 	private List<City> cities;
 	private int turn;
-	private Action action;
-	private Color player;
-	private String destination;
 
 	private GameState() {
 		turn = 0;
@@ -91,6 +88,10 @@ public class GameState {
 		this.cities.add(c);
 	}
 
+	public List<City> getAllCities() {
+		return this.cities;
+	}
+
 	/**
 	 * This method checks whether there are any further moves available to make
 	 * by players
@@ -120,48 +121,14 @@ public class GameState {
 		this.turn++;
 	}
 
-	/**
-	 * @return the action
-	 */
-	public Action getAction() {
-		return action;
+	public GameState clone() {
+		GameState state = new GameState();
+		state.turn = this.turn;
+		state.cities = this.cities;
+		return state;
 	}
 
-	/**
-	 * @param action
-	 *            the action to set
-	 */
-	public void setAction(Action action) {
-		this.action = action;
-	}
-
-	/**
-	 * @return the player
-	 */
-	public Color getPlayer() {
-		return player;
-	}
-
-	/**
-	 * @param player
-	 *            the player to set
-	 */
-	public void setPlayer(Color player) {
-		this.player = player;
-	}
-
-	/**
-	 * @return the destination
-	 */
-	public String getDestination() {
-		return destination;
-	}
-
-	/**
-	 * @param destination
-	 *            the destination to set
-	 */
-	public void setDestination(String destination) {
-		this.destination = destination;
+	public void getUpdateCities(List<City> updatedCitiesList) {
+		cities = updatedCitiesList;
 	}
 }

@@ -61,7 +61,8 @@ public class City extends Node {
 
 	public String toString() {
 		StringBuffer buff = new StringBuffer();
-		buff.append(name + ", E=" + E.size() + ", " + value + ", " + occupation);
+		buff.append("[" + name + ", E=" + E.size() + ", " + value + ", "
+				+ occupation + "]");
 		return buff.toString();
 	}
 }
