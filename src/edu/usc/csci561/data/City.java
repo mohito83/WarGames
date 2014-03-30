@@ -3,11 +3,12 @@
  */
 package edu.usc.csci561.data;
 
+
 /**
  * @author mohit aggarwl
  * 
  */
-public class City extends Node {
+public class City extends Node implements Cloneable {
 
 	private int value;
 	/**
@@ -64,5 +65,17 @@ public class City extends Node {
 		buff.append("[" + name + ", E=" + E.size() + ", " + value + ", "
 				+ occupation + "]");
 		return buff.toString();
+	}
+
+	public City clone() {
+		City c = new City(getName());
+		c.setState(state);
+		c.setOccupation(getOccupation());
+		c.setValue(getValue());
+		/*List<Edge> edges = getEdges();
+		for (Edge e : edges) {
+			c.addEdge(e.clone());
+		}*/
+		return c;
 	}
 }

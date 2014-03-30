@@ -118,7 +118,9 @@ public abstract class Player {
 			for (Node e : adjList) {
 				City x = (City) e;
 				if (x.getOccupation() == Occupation.NEUTRAL) {
-					Action act = new Action(state.clone(), this, x, 1);
+					GameState clonedState = state.clone();
+					Action act = new Action(clonedState, this,
+							clonedState.getCityForName(x.getName()), 1);
 					act.performForcedMarch();
 					act.eval();
 					actions.add(act);
@@ -134,7 +136,9 @@ public abstract class Player {
 		// evaluate the paratroop drop startegy
 		cities = state.getNeutralCities();
 		for (City c : cities) {
-			Action act = new Action(state.clone(), this, c, 1);
+			GameState clonedState = state.clone();
+			Action act = new Action(clonedState, this,
+					clonedState.getCityForName(c.getName()), 1);
 			act.performParatroopDrop();
 			act.eval();
 			actions.add(act);
@@ -175,7 +179,7 @@ public abstract class Player {
 		buff.append(System.getProperty("line.separator"));
 		buff.append("Destination = " + maxAct.getDestination().getName());
 		buff.append(System.getProperty("line.separator"));
-
+		buff.append("Union,{");
 		int i = 0;
 		double sum = 0.0;
 		for (City c : state.getUnionCities()) {
