@@ -85,12 +85,12 @@ public class WarSimulationGame {
 			int i = 0;
 			double sum = 0.0;
 			for (City c : gameState.getUnionCities()) {
+				i++;
 				sum += c.getValue();
 				buff.append(c.getName());
 				if (i < gameState.getUnionCities().size()) {
 					buff.append(",");
 				}
-				i++;
 			}
 			buff.append("},");
 			buff.append(sum);
@@ -100,12 +100,12 @@ public class WarSimulationGame {
 			i = 0;
 			sum = 0.0;
 			for (City c : gameState.getConfederateCities()) {
+				i++;
 				sum += c.getValue();
 				buff.append(c.getName());
 				if (i < gameState.getConfederateCities().size()) {
 					buff.append(",");
 				}
-				i++;
 			}
 			buff.append("},");
 			buff.append(sum);

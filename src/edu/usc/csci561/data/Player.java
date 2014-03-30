@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import edu.usc.csci561.UnionPlayer;
+import edu.usc.csci561.data.Node.State;
 
 /**
  * @author mohit aggarwl
@@ -103,6 +104,8 @@ public abstract class Player {
 
 	protected void greedyEvaluation() {
 		GameState state = GameState.getInstance();
+		resetVisitingStateofNode(state);
+
 		List<City> cities = null;
 		if (this instanceof UnionPlayer) {
 			cities = state.getUnionCities();
@@ -117,7 +120,8 @@ public abstract class Player {
 			List<Node> adjList = c.getAdjacencyList();
 			for (Node e : adjList) {
 				City x = (City) e;
-				if (x.getOccupation() == Occupation.NEUTRAL) {
+				if (x.getOccupation() == Occupation.NEUTRAL
+						&& x.getState() == State.UNVIISTED) {
 					GameState clonedState = state.clone();
 					Action act = new Action(clonedState, this,
 							clonedState.getCityForName(x.getName()), 1);
@@ -129,6 +133,7 @@ public abstract class Player {
 					} catch (IOException e1) {
 						System.out.println(e1.getMessage());
 					}
+					x.setState(State.VISITED);
 				}
 			}
 		}
@@ -183,12 +188,12 @@ public abstract class Player {
 		int i = 0;
 		double sum = 0.0;
 		for (City c : state.getUnionCities()) {
+			i++;
 			sum += c.getValue();
 			buff.append(c.getName());
 			if (i < state.getUnionCities().size()) {
 				buff.append(",");
 			}
-			i++;
 		}
 		buff.append("},");
 		buff.append(sum);
@@ -198,12 +203,12 @@ public abstract class Player {
 		i = 0;
 		sum = 0.0;
 		for (City c : state.getConfederateCities()) {
+			i++;
 			sum += c.getValue();
 			buff.append(c.getName());
 			if (i < state.getConfederateCities().size()) {
 				buff.append(",");
 			}
-			i++;
 		}
 		buff.append("},");
 		buff.append(sum);
@@ -212,5 +217,17 @@ public abstract class Player {
 		buff.append(System.getProperty("line.separator"));
 
 		return buff.toString();
+	}
+
+	/**
+	 * resets the state information of the nodes.
+	 * 
+	 * @param state
+	 */
+	protected void resetVisitingStateofNode(GameState state) {
+		List<City> cities = state.getAllCities();
+		for (City c : cities) {
+			c.setState(State.UNVIISTED);
+		}
 	}
 }
