@@ -129,7 +129,9 @@ public abstract class Player {
 					act.eval();
 					actions.add(act);
 					try {
-						printLogs(act.getLog());
+						if (this instanceof UnionPlayer) {
+							printLogs(act.getLog());
+						}
 					} catch (IOException e1) {
 						System.out.println(e1.getMessage());
 					}
@@ -148,7 +150,9 @@ public abstract class Player {
 			act.eval();
 			actions.add(act);
 			try {
-				printLogs(act.getLog());
+				if (this instanceof UnionPlayer) {
+					printLogs(act.getLog());
+				}
 			} catch (IOException e) {
 				System.out.println(e.getMessage());
 			}

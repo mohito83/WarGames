@@ -72,18 +72,25 @@ public class Action {
 	 * This method evaluates the state of the game for the given player.
 	 */
 	public void eval() {
-		List<City> cities = null;
-
-		if (player instanceof UnionPlayer) {
-			cities = gameState.getUnionCities();
-		} else {
-			cities = gameState.getConfederateCities();
-		}
+		List<City> cities = gameState.getAllCities();// null;
 
 		eval = 0;
 		for (City c : cities) {
-			eval += c.getValue();
+			if (player instanceof UnionPlayer) {
+				if (c.getOccupation() == Occupation.UNION) {
+					eval += c.getValue();
+				} else if (c.getOccupation() == Occupation.CONFEDERATE) {
+					eval -= c.getValue();
+				}
+			} else {
+				if (c.getOccupation() == Occupation.CONFEDERATE) {
+					eval += c.getValue();
+				} else if (c.getOccupation() == Occupation.UNION) {
+					eval -= c.getValue();
+				}
+			}
 		}
+
 	}
 
 	/**

@@ -48,13 +48,36 @@ public class UnionPlayer extends Player {
 			greedyEvaluation();
 			break;
 		case 2:
+			minimaxEvaluation();
 			break;
 		case 3:
+			alphaBetaPruningEvaluation();
 			break;
 
 		}
 	}
 
+	/**
+	 * This method generates a search tree with a cutoff depth as defined in the
+	 * class instance and perform an Minimax evaluation with alpha beta pruning
+	 * algorithm
+	 */
+	private void alphaBetaPruningEvaluation() {
+
+	}
+
+	/**
+	 * This method generates a search tree with a cutoff depth as defined in the
+	 * class instance and perform an Minimax evaluation algorithm
+	 */
+	private void minimaxEvaluation() {
+
+	}
+
+	private void buildSearchTree(){
+		
+	}
+	
 	/**
 	 * @return the cutoffLevel
 	 */
