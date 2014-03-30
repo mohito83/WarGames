@@ -131,13 +131,13 @@ public class GameState implements Cloneable {
 
 		// populate the edges
 		for (City c : this.cities) {
-			City cloneCity = state.getCityForName(c.getName());
-			List<Edge> edges = c.getEdges();
+			City cloneCity = state.getCityForName(c.getVal());
+			List<Edge<String>> edges = c.getEdges();
 
-			for (Edge e : edges) {
-				Node cloneA = state.getCityForName(e.a.getName());
-				Node cloneB = state.getCityForName(e.b.getName());
-				Edge cloneEdge = new Edge(cloneA, cloneB);
+			for (Edge<String> e : edges) {
+				Node<String> cloneA = state.getCityForName(e.a.getVal());
+				Node<String> cloneB = state.getCityForName(e.b.getVal());
+				Edge<String> cloneEdge = new Edge<String>(cloneA, cloneB);
 				cloneCity.addEdge(cloneEdge);
 			}
 		}
@@ -152,7 +152,7 @@ public class GameState implements Cloneable {
 	public City getCityForName(String str) {
 		City result = null;
 		for (City c : this.cities) {
-			if (c.getName().equals(str)) {
+			if (c.getVal().equals(str)) {
 				result = c;
 				break;
 			}

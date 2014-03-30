@@ -3,14 +3,13 @@
  */
 package edu.usc.csci561.data;
 
-
 /**
  * @author mohit aggarwl
  * 
  */
-public class City extends Node implements Cloneable {
+public class City extends Node<String> implements Cloneable {
 
-	private int value;
+	private int resourceValue;
 	/**
 	 * -1 => confederates, 1=> Union, 0=> Neutral
 	 */
@@ -22,19 +21,19 @@ public class City extends Node implements Cloneable {
 
 	public City(String name, int value) {
 		super(name);
-		this.value = value;
+		this.resourceValue = value;
 	}
 
-	public City(String name, Edge e, int value) {
+	public City(String name, Edge<String> e, int value) {
 		super(name, e);
-		this.value = value;
+		this.resourceValue = value;
 	}
 
 	/**
 	 * @return the value
 	 */
-	public int getValue() {
-		return value;
+	public int getResourceValue() {
+		return resourceValue;
 	}
 
 	/**
@@ -56,26 +55,22 @@ public class City extends Node implements Cloneable {
 	 * @param value
 	 *            the value to set
 	 */
-	public void setValue(int value) {
-		this.value = value;
+	public void setResourceValue(int value) {
+		this.resourceValue = value;
 	}
 
 	public String toString() {
 		StringBuffer buff = new StringBuffer();
-		buff.append("[" + name + ", E=" + E.size() + ", " + value + ", "
+		buff.append("[" + val + ", E=" + E.size() + ", " + resourceValue + ", "
 				+ occupation + "]");
 		return buff.toString();
 	}
 
 	public City clone() {
-		City c = new City(getName());
+		City c = new City(getVal());
 		c.setState(state);
 		c.setOccupation(getOccupation());
-		c.setValue(getValue());
-		/*List<Edge> edges = getEdges();
-		for (Edge e : edges) {
-			c.addEdge(e.clone());
-		}*/
+		c.setResourceValue(getResourceValue());
 		return c;
 	}
 }

@@ -117,14 +117,14 @@ public abstract class Player {
 
 		// for evaluating the forced march strategy
 		for (City c : cities) {
-			List<Node> adjList = c.getAdjacencyList();
-			for (Node e : adjList) {
+			List<Node<String>> adjList = c.getAdjacencyList();
+			for (Node<String> e : adjList) {
 				City x = (City) e;
 				if (x.getOccupation() == Occupation.NEUTRAL
 						&& x.getState() == State.UNVIISTED) {
 					GameState clonedState = state.clone();
 					Action act = new Action(clonedState, this,
-							clonedState.getCityForName(x.getName()), 1);
+							clonedState.getCityForName(x.getVal()), 1);
 					act.performForcedMarch();
 					act.eval();
 					actions.add(act);
@@ -145,7 +145,7 @@ public abstract class Player {
 		for (City c : cities) {
 			GameState clonedState = state.clone();
 			Action act = new Action(clonedState, this,
-					clonedState.getCityForName(c.getName()), 1);
+					clonedState.getCityForName(c.getVal()), 1);
 			act.performParatroopDrop();
 			act.eval();
 			actions.add(act);
@@ -186,15 +186,15 @@ public abstract class Player {
 		buff.append("Action = ");
 		buff.append(maxAct.isForcedMarch() ? "Force March" : "Paratroop Drop");
 		buff.append(System.getProperty("line.separator"));
-		buff.append("Destination = " + maxAct.getDestination().getName());
+		buff.append("Destination = " + maxAct.getDestination().getVal());
 		buff.append(System.getProperty("line.separator"));
 		buff.append("Union,{");
 		int i = 0;
 		double sum = 0.0;
 		for (City c : state.getUnionCities()) {
 			i++;
-			sum += c.getValue();
-			buff.append(c.getName());
+			sum += c.getResourceValue();
+			buff.append(c.getVal());
 			if (i < state.getUnionCities().size()) {
 				buff.append(",");
 			}
@@ -208,8 +208,8 @@ public abstract class Player {
 		sum = 0.0;
 		for (City c : state.getConfederateCities()) {
 			i++;
-			sum += c.getValue();
-			buff.append(c.getName());
+			sum += c.getResourceValue();
+			buff.append(c.getVal());
 			if (i < state.getConfederateCities().size()) {
 				buff.append(",");
 			}

@@ -86,8 +86,8 @@ public class WarSimulationGame {
 			double sum = 0.0;
 			for (City c : gameState.getUnionCities()) {
 				i++;
-				sum += c.getValue();
-				buff.append(c.getName());
+				sum += c.getResourceValue();
+				buff.append(c.getVal());
 				if (i < gameState.getUnionCities().size()) {
 					buff.append(",");
 				}
@@ -101,8 +101,8 @@ public class WarSimulationGame {
 			sum = 0.0;
 			for (City c : gameState.getConfederateCities()) {
 				i++;
-				sum += c.getValue();
-				buff.append(c.getName());
+				sum += c.getResourceValue();
+				buff.append(c.getVal());
 				if (i < gameState.getConfederateCities().size()) {
 					buff.append(",");
 				}
@@ -124,7 +124,7 @@ public class WarSimulationGame {
 
 			@Override
 			public int compare(City o1, City o2) {
-				return o1.getName().compareTo(o2.getName());
+				return o1.getVal().compareTo(o2.getVal());
 			}
 		});
 
@@ -163,7 +163,7 @@ public class WarSimulationGame {
 			while ((str = reader.readLine()) != null) {
 				String[] tokens = str.split(",");
 				City c = nodeMap.get(tokens[0]);
-				c.setValue(Integer.parseInt(tokens[1]));
+				c.setResourceValue(Integer.parseInt(tokens[1]));
 				switch (Integer.parseInt(tokens[2])) {
 				case -1:
 					c.setOccupation(Occupation.CONFEDERATE);

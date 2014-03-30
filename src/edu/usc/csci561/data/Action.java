@@ -78,15 +78,15 @@ public class Action {
 		for (City c : cities) {
 			if (player instanceof UnionPlayer) {
 				if (c.getOccupation() == Occupation.UNION) {
-					eval += c.getValue();
+					eval += c.getResourceValue();
 				} else if (c.getOccupation() == Occupation.CONFEDERATE) {
-					eval -= c.getValue();
+					eval -= c.getResourceValue();
 				}
 			} else {
 				if (c.getOccupation() == Occupation.CONFEDERATE) {
-					eval += c.getValue();
+					eval += c.getResourceValue();
 				} else if (c.getOccupation() == Occupation.UNION) {
-					eval -= c.getValue();
+					eval -= c.getResourceValue();
 				}
 			}
 		}
@@ -108,8 +108,8 @@ public class Action {
 	public void performForcedMarch() {
 		performParatroopDrop();
 		isForcedMarch = true;
-		List<Node> nodes = destination.getAdjacencyList();
-		for (Node n : nodes) {
+		List<Node<String>> nodes = destination.getAdjacencyList();
+		for (Node<String> n : nodes) {
 			City c = (City) n;
 			if (c.getOccupation() != Occupation.NEUTRAL) {
 				if (player instanceof UnionPlayer) {
@@ -140,7 +140,7 @@ public class Action {
 			buff.append("Paratroop Drop,");
 		}
 
-		buff.append(destination.getName());
+		buff.append(destination.getVal());
 		buff.append(",");
 		buff.append(depth);
 		buff.append(",");

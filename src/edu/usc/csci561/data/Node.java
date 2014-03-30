@@ -10,27 +10,27 @@ import java.util.List;
  * @author mohit aggarwl
  * 
  */
-public class Node {
+public class Node<T> {
 
 	public enum State {
 		UNVIISTED, VISITING, VISITED;
 	}
 
-	protected String name;
-	protected List<Edge> E;
+	protected T val;
+	protected List<Edge<T>> E;
 	State state;
 
 	public Node() {
 		this(null);
 	}
 
-	public Node(String name) {
-		this.name = name;
+	public Node(T name) {
+		this.val = name;
 		state = State.UNVIISTED;
-		E = new ArrayList<Edge>();
+		E = new ArrayList<Edge<T>>();
 	}
 
-	public Node(String name, Edge e) {
+	public Node(T name, Edge<T> e) {
 		this(name);
 		this.E.add(e);
 	}
@@ -38,16 +38,16 @@ public class Node {
 	/**
 	 * @return the name
 	 */
-	public String getName() {
-		return name;
+	public T getVal() {
+		return val;
 	}
 
 	/**
 	 * @param name
 	 *            the name to set
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setVal(T name) {
+		this.val = name;
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class Node {
 	 * 
 	 * @param e
 	 */
-	public void addEdge(Edge e) {
+	public void addEdge(Edge<T> e) {
 		this.E.add(e);
 	}
 
@@ -77,7 +77,7 @@ public class Node {
 	 * 
 	 * @return
 	 */
-	public List<Edge> getEdges() {
+	public List<Edge<T>> getEdges() {
 		return this.E;
 	}
 
@@ -86,16 +86,16 @@ public class Node {
 	 * 
 	 * @return
 	 */
-	public List<Node> getAdjacencyList() {
-		List<Node> adjList = new ArrayList<Node>();
-		for (Edge e : E) {
+	public List<Node<T>> getAdjacencyList() {
+		List<Node<T>> adjList = new ArrayList<Node<T>>();
+		for (Edge<T> e : E) {
 			adjList.add(e.getOtherEndofEdge(this));
 		}
 		return adjList;
 	}
 
-	public void addEdge(Node n) {
-		Edge e = new Edge(this, n);
+	public void addEdge(Node<T> n) {
+		Edge<T> e = new Edge<T>(this, n);
 		this.E.add(e);
 	}
 }
