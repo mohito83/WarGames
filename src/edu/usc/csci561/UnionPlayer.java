@@ -3,15 +3,16 @@
  */
 package edu.usc.csci561;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Stack;
 
 import edu.usc.csci561.data.Action;
 import edu.usc.csci561.data.City;
 import edu.usc.csci561.data.Color;
 import edu.usc.csci561.data.GameState;
+import edu.usc.csci561.data.Node;
 import edu.usc.csci561.data.Player;
 import edu.usc.csci561.searchtree.MiniMax;
 import edu.usc.csci561.searchtree.SearchNode;
@@ -82,12 +83,52 @@ public class UnionPlayer extends Player {
 	 */
 	private void minimaxEvaluation() {
 		SearchNode root = buildSearchTree();
-		Stack<SearchNode> stack = new Stack<SearchNode>();
-		stack.add(root);
-
-		while (!stack.isEmpty()) {
-			SearchNode n = stack.pop();
+		int val = maxOp(root);
+		Action action = null;
+		for (Node<Action> n : root.getAdjacencyList()) {
+			if (((SearchNode) n).getEval() == val) {
+				action = n.getVal();
+				break;
+			}
 		}
+
+		// update the global GameState instance with the next step game state
+		GameState state = GameState.getInstance();
+		state.getUpdateCities(action.getUpdatedCitiesList());
+		state.incrementTurn();
+
+		// print the moves
+		try {
+			printMoves(getResultLogs(action));
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	private int minOp(SearchNode root) {
+		if (root.getAdjacencyList().size() == 0) {
+			return (int) root.getAction().getEval();
+		}
+
+		root.setEval(Integer.MAX_VALUE);
+		for (Node<Action> n : root.getAdjacencyList()) {
+			int max = maxOp((SearchNode) n);
+			root.setEval(Math.min(root.getEval(), max));
+		}
+		return root.getEval();
+	}
+
+	private int maxOp(SearchNode root) {
+		if (root.getAdjacencyList().size() == 0) {
+			return (int) root.getAction().getEval();
+		}
+
+		root.setEval(Integer.MIN_VALUE);
+		for (Node<Action> n : root.getAdjacencyList()) {
+			int min = minOp((SearchNode) n);
+			root.setEval(Math.max(root.getEval(), min));
+		}
+		return root.getEval();
 	}
 
 	/**

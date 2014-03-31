@@ -222,7 +222,7 @@ public class WarSimulationGame {
 					nodeMap.put(nodes[1], c2);
 				}
 
-				Edge e = new Edge(c1, c2);
+				Edge<String> e = new Edge<String>(c1, c2);
 				c1.addEdge(e);
 				c2.addEdge(e);
 			}
