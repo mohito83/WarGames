@@ -160,4 +160,11 @@ public class Action {
 	public boolean isForcedMarch() {
 		return isForcedMarch;
 	}
+
+	/**
+	 * @return the gameState
+	 */
+	public GameState getGameState() {
+		return gameState;
+	}
 }

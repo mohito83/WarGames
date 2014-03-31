@@ -3,8 +3,16 @@
  */
 package edu.usc.csci561;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+import edu.usc.csci561.data.Action;
+import edu.usc.csci561.data.City;
 import edu.usc.csci561.data.Color;
+import edu.usc.csci561.data.GameState;
 import edu.usc.csci561.data.Player;
+import edu.usc.csci561.searchtree.SearchNode;
 
 /**
  * @author mohit aggarwl
@@ -63,7 +71,7 @@ public class UnionPlayer extends Player {
 	 * algorithm
 	 */
 	private void alphaBetaPruningEvaluation() {
-
+		SearchNode root = buildSearchTree();
 	}
 
 	/**
@@ -71,13 +79,49 @@ public class UnionPlayer extends Player {
 	 * class instance and perform an Minimax evaluation algorithm
 	 */
 	private void minimaxEvaluation() {
-
-	}
-
-	private void buildSearchTree(){
+		SearchNode root = buildSearchTree();
 		
 	}
-	
+
+	/**
+	 * This method builds the search tree.
+	 */
+	private SearchNode buildSearchTree() {
+		GameState originalState = GameState.getInstance();
+		resetVisitingStateofNode(originalState);
+
+		List<City> cities = originalState.getUnionCities();
+
+		Action dummy = new Action(originalState, this, null, 0);
+		SearchNode root = new SearchNode(dummy);
+
+		Queue<SearchNode> queue = new LinkedList<SearchNode>();
+		queue.add(root);
+		while (!queue.isEmpty()) {
+
+			SearchNode node = queue.peek();
+
+			// write the breaking condition
+			// 1. if it has reached the cut off depth
+			// 2. of if the game has reached it end
+			if (node.getDepth() > cutoffLevel
+					|| node.getAction().getGameState().isNoMoreMoves()) {
+				break;
+			}
+
+			performForcedMarch(cities, queue);
+
+			// XXX a hack to ensure that the root node is available for the
+			// paratroop drop operation.
+			((LinkedList<SearchNode>) queue).addFirst(node);
+
+			performParatroopDrop(queue);
+
+		}
+
+		return root;
+	}
+
 	/**
 	 * @return the cutoffLevel
 	 */

@@ -5,13 +5,15 @@ package edu.usc.csci561.data;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import edu.usc.csci561.UnionPlayer;
 import edu.usc.csci561.data.Node.State;
+import edu.usc.csci561.searchtree.SearchNode;
 
 /**
  * @author mohit aggarwl
@@ -113,9 +115,52 @@ public abstract class Player {
 			cities = state.getConfederateCities();
 		}
 
-		List<Action> actions = new ArrayList<Action>();
+		Action dummy = new Action(state, this, null, 0);
+		SearchNode root = new SearchNode(dummy);
+
+		Queue<SearchNode> queue = new LinkedList<SearchNode>();
+		queue.add(root);
 
 		// for evaluating the forced march strategy
+		performForcedMarch(cities, queue);
+
+		// XXX a hack to ensure that the root node is available for the
+		// paratroop drop operation.
+		((LinkedList<SearchNode>) queue).addFirst(root);
+
+		// evaluate the paratroop drop startegy
+		performParatroopDrop(queue);
+
+		// sort the Actions based on the eval value
+		SearchNode maxAct = Collections.max(queue,
+				new Comparator<SearchNode>() {
+
+					@Override
+					public int compare(SearchNode o1, SearchNode o2) {
+						return (int) (o1.getAction().getEval() - o2.getAction()
+								.getEval());
+					}
+				});
+
+		state.getUpdateCities(maxAct.getAction().getUpdatedCitiesList());
+		state.incrementTurn();
+		try {
+			printMoves(getResultLogs(maxAct.getAction()));
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	/**
+	 * 
+	 * @param cities
+	 * @param state
+	 * @param root
+	 * @param queue
+	 */
+	protected void performForcedMarch(List<City> cities, Queue<SearchNode> queue) {
+		SearchNode root = queue.remove();
+		GameState state = root.getAction().getGameState();
 		for (City c : cities) {
 			List<Node<String>> adjList = c.getAdjacencyList();
 			for (Node<String> e : adjList) {
@@ -124,14 +169,15 @@ public abstract class Player {
 						&& x.getState() == State.UNVIISTED) {
 					GameState clonedState = state.clone();
 					Action act = new Action(clonedState, this,
-							clonedState.getCityForName(x.getVal()), 1);
+							clonedState.getCityForName(x.getVal()),
+							root.getDepth() + 1);
 					act.performForcedMarch();
 					act.eval();
-					actions.add(act);
+					SearchNode node = new SearchNode(act);
+					root.addEdge(node);
+					queue.add(node);
 					try {
-						if (this instanceof UnionPlayer) {
-							printLogs(act.getLog());
-						}
+						printLogs(act.getLog());
 					} catch (IOException e1) {
 						System.out.println(e1.getMessage());
 					}
@@ -139,40 +185,32 @@ public abstract class Player {
 				}
 			}
 		}
+	}
 
-		// evaluate the paratroop drop startegy
-		cities = state.getNeutralCities();
+	/**
+	 * 
+	 * @param state
+	 * @param root
+	 * @param queue
+	 */
+	protected void performParatroopDrop(Queue<SearchNode> queue) {
+		SearchNode root = queue.remove();
+		GameState state = root.getAction().getGameState();
+		List<City> cities = state.getNeutralCities();
 		for (City c : cities) {
 			GameState clonedState = state.clone();
 			Action act = new Action(clonedState, this,
-					clonedState.getCityForName(c.getVal()), 1);
+					clonedState.getCityForName(c.getVal()), root.getDepth() + 1);
 			act.performParatroopDrop();
 			act.eval();
-			actions.add(act);
+			SearchNode node = new SearchNode(act);
+			root.addEdge(node);
+			queue.add(node);
 			try {
-				if (this instanceof UnionPlayer) {
-					printLogs(act.getLog());
-				}
+				printLogs(act.getLog());
 			} catch (IOException e) {
 				System.out.println(e.getMessage());
 			}
-		}
-
-		// sort the Actions based on the eval value
-		Action maxAct = Collections.max(actions, new Comparator<Action>() {
-
-			@Override
-			public int compare(Action o1, Action o2) {
-				return (int) (o1.getEval() - o2.getEval());
-			}
-		});
-
-		state.getUpdateCities(maxAct.getUpdatedCitiesList());
-		state.incrementTurn();
-		try {
-			printMoves(getResultLogs(maxAct));
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
 		}
 	}
 
