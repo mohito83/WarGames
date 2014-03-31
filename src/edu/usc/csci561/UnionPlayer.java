@@ -6,6 +6,7 @@ package edu.usc.csci561;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Stack;
 
 import edu.usc.csci561.data.Action;
 import edu.usc.csci561.data.City;
@@ -81,7 +82,12 @@ public class UnionPlayer extends Player {
 	 */
 	private void minimaxEvaluation() {
 		SearchNode root = buildSearchTree();
-		
+		Stack<SearchNode> stack = new Stack<SearchNode>();
+		stack.add(root);
+
+		while (!stack.isEmpty()) {
+			SearchNode n = stack.pop();
+		}
 	}
 
 	/**
@@ -94,7 +100,7 @@ public class UnionPlayer extends Player {
 		List<City> cities = originalState.getUnionCities();
 
 		Action dummy = new Action(originalState, this, null, 0);
-		SearchNode root = new SearchNode(dummy,MiniMax.MAX);
+		SearchNode root = new SearchNode(dummy, MiniMax.MAX);
 
 		Queue<SearchNode> queue = new LinkedList<SearchNode>();
 		queue.add(root);
@@ -105,7 +111,7 @@ public class UnionPlayer extends Player {
 			// write the breaking condition
 			// 1. if it has reached the cut off depth
 			// 2. of if the game has reached it end
-			if (node.getDepth() > cutoffLevel
+			if (node.getDepth() == cutoffLevel
 					|| node.getAction().getGameState().isNoMoreMoves()) {
 				break;
 			}

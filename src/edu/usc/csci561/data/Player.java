@@ -27,6 +27,14 @@ public abstract class Player {
 	private FileWriter logWriter;
 	private FileWriter movesWriter;
 
+	protected Comparator<SearchNode> nodeComparator = new Comparator<SearchNode>() {
+
+		@Override
+		public int compare(SearchNode o1, SearchNode o2) {
+			return (int) (o1.getAction().getEval() - o2.getAction().getEval());
+		}
+	};
+
 	public Player() {
 		this(Color.RED);
 	}
@@ -133,15 +141,7 @@ public abstract class Player {
 		performParatroopDrop(queue);
 
 		// sort the Actions based on the eval value
-		SearchNode maxAct = Collections.max(queue,
-				new Comparator<SearchNode>() {
-
-					@Override
-					public int compare(SearchNode o1, SearchNode o2) {
-						return (int) (o1.getAction().getEval() - o2.getAction()
-								.getEval());
-					}
-				});
+		SearchNode maxAct = Collections.max(queue, nodeComparator);
 
 		state.getUpdateCities(maxAct.getAction().getUpdatedCitiesList());
 		state.incrementTurn();

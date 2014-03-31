@@ -14,6 +14,7 @@ public class SearchNode extends Node<Action> {
 
 	private MiniMax type;
 	private int depth;
+	private int eval;
 
 	public SearchNode(Action a) {
 		super(a);
@@ -59,6 +60,20 @@ public class SearchNode extends Node<Action> {
 	 */
 	public void setType(MiniMax type) {
 		this.type = type;
+	}
+
+	/**
+	 * @return the eval
+	 */
+	public int getEval() {
+		return eval;
+	}
+
+	/**
+	 * @param eval the eval to set
+	 */
+	public void setEval(int eval) {
+		this.eval = eval;
 	}
 
 }
