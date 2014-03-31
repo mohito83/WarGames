@@ -12,6 +12,7 @@ import edu.usc.csci561.data.City;
 import edu.usc.csci561.data.Color;
 import edu.usc.csci561.data.GameState;
 import edu.usc.csci561.data.Player;
+import edu.usc.csci561.searchtree.MiniMax;
 import edu.usc.csci561.searchtree.SearchNode;
 
 /**
@@ -93,7 +94,7 @@ public class UnionPlayer extends Player {
 		List<City> cities = originalState.getUnionCities();
 
 		Action dummy = new Action(originalState, this, null, 0);
-		SearchNode root = new SearchNode(dummy);
+		SearchNode root = new SearchNode(dummy,MiniMax.MAX);
 
 		Queue<SearchNode> queue = new LinkedList<SearchNode>();
 		queue.add(root);

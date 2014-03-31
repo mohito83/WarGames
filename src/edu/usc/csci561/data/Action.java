@@ -60,13 +60,6 @@ public class Action {
 		return depth;
 	}
 
-	/**
-	 * @param depth
-	 *            the depth to set
-	 */
-	public void setDepth(int depth) {
-		this.depth = depth;
-	}
 
 	/**
 	 * This method evaluates the state of the game for the given player.

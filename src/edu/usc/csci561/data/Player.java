@@ -13,6 +13,7 @@ import java.util.Queue;
 
 import edu.usc.csci561.UnionPlayer;
 import edu.usc.csci561.data.Node.State;
+import edu.usc.csci561.searchtree.MiniMax;
 import edu.usc.csci561.searchtree.SearchNode;
 
 /**
@@ -116,7 +117,7 @@ public abstract class Player {
 		}
 
 		Action dummy = new Action(state, this, null, 0);
-		SearchNode root = new SearchNode(dummy);
+		SearchNode root = new SearchNode(dummy, MiniMax.MAX);
 
 		Queue<SearchNode> queue = new LinkedList<SearchNode>();
 		queue.add(root);
@@ -174,6 +175,12 @@ public abstract class Player {
 					act.performForcedMarch();
 					act.eval();
 					SearchNode node = new SearchNode(act);
+					if (root.getType() == MiniMax.MAX) {
+						node.setType(MiniMax.MIN);
+					} else {
+						node.setType(MiniMax.MAX);
+					}
+					node.setDepth(root.getDepth() + 1);
 					root.addEdge(node);
 					queue.add(node);
 					try {
@@ -204,6 +211,12 @@ public abstract class Player {
 			act.performParatroopDrop();
 			act.eval();
 			SearchNode node = new SearchNode(act);
+			if (root.getType() == MiniMax.MAX) {
+				node.setType(MiniMax.MIN);
+			} else {
+				node.setType(MiniMax.MAX);
+			}
+			node.setDepth(root.getDepth() + 1);
 			root.addEdge(node);
 			queue.add(node);
 			try {
@@ -214,7 +227,7 @@ public abstract class Player {
 		}
 	}
 
-	private String getResultLogs(Action maxAct) {
+	protected String getResultLogs(Action maxAct) {
 		GameState state = GameState.getInstance();
 		StringBuffer buff = new StringBuffer();
 		buff.append("TURN = " + state.getTurn());

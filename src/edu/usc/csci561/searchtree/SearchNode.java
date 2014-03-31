@@ -54,4 +54,11 @@ public class SearchNode extends Node<Action> {
 		this.depth = depth;
 	}
 
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(MiniMax type) {
+		this.type = type;
+	}
+
 }
