@@ -268,7 +268,7 @@ public abstract class Player {
 		buff.append("},");
 		buff.append(sum);
 		buff.append(System.getProperty("line.separator"));
-		buff.append("--------------------------------------------------------------");
+		buff.append("----------------------------------------------");
 		buff.append(System.getProperty("line.separator"));
 
 		return buff.toString();

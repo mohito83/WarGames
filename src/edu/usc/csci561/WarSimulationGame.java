@@ -110,7 +110,7 @@ public class WarSimulationGame {
 			buff.append("},");
 			buff.append(sum);
 			buff.append(System.getProperty("line.separator"));
-			buff.append("--------------------------------------------------------------");
+			buff.append("----------------------------------------------");
 			movesWriter.write(buff.toString());
 			movesWriter.write(System.getProperty("line.separator"));
 
