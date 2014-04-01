@@ -12,9 +12,8 @@ import edu.usc.csci561.data.Player;
  */
 public class ConfederationPlayer extends Player {
 
-	public ConfederationPlayer(Color blue) {
-		super(blue);
-		name = "Confederacy";
+	public ConfederationPlayer(Color blue, int cutoff, int task) {
+		super(blue, cutoff, task);
 	}
 
 	@Override

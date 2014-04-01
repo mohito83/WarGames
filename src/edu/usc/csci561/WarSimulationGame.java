@@ -47,18 +47,16 @@ public class WarSimulationGame {
 	 * 
 	 */
 	public static void main(String[] args) {
-		Player union = new UnionPlayer(Color.RED);
-		Player confed = new ConfederationPlayer(Color.BLUE);
 		gameState = GameState.getInstance();
 
 		parseCommandLine(args);
 
-		((UnionPlayer) union).setCutoffLevel(cutOffDepth);
-		((UnionPlayer) union).setSearch(task);
-
 		parseMapFile(mapFile);
 
 		parseInitFile(initFile);
+
+		Player union = new UnionPlayer(Color.RED, cutOffDepth, task);
+		Player confed = new ConfederationPlayer(Color.BLUE, cutOffDepth, task);
 
 		// initial print
 		FileWriter logsWriter = null;

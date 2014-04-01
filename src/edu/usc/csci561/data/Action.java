@@ -114,35 +114,6 @@ public class Action {
 		}
 	}
 
-	/**
-	 * This method generates the Log string
-	 * 
-	 * @return
-	 */
-	public String getLog() {
-		StringBuffer buff = new StringBuffer();
-		if (player instanceof UnionPlayer) {
-			buff.append("Union,");
-		} else {
-			buff.append("Confedracy,");
-		}
-
-		if (isForcedMarch) {
-			buff.append("Force March,");
-		} else {
-			buff.append("Paratroop Drop,");
-		}
-
-		buff.append(destination.getVal());
-		buff.append(",");
-		buff.append(depth);
-		buff.append(",");
-		buff.append(eval);
-		buff.append(System.getProperty("line.separator"));
-
-		return buff.toString();
-	}
-
 	public List<City> getUpdatedCitiesList() {
 		return gameState.getAllCities();
 	}
@@ -159,5 +130,12 @@ public class Action {
 	 */
 	public GameState getGameState() {
 		return gameState;
+	}
+
+	/**
+	 * @return the player
+	 */
+	public Player getPlayer() {
+		return player;
 	}
 }

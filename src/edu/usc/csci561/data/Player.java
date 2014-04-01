@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import edu.usc.csci561.ConfederationPlayer;
 import edu.usc.csci561.UnionPlayer;
 import edu.usc.csci561.data.Node.State;
 import edu.usc.csci561.searchtree.MiniMax;
@@ -22,40 +23,40 @@ import edu.usc.csci561.searchtree.SearchNode;
  */
 public abstract class Player {
 
-	protected String name;
 	private Color color;
 	private FileWriter logWriter;
 	private FileWriter movesWriter;
 
-	protected Comparator<SearchNode> nodeComparator = new Comparator<SearchNode>() {
+	protected int cutoffLevel;
+	protected int task;
+
+	protected Comparator<Node<Action>> nodeComparator = new Comparator<Node<Action>>() {
 
 		@Override
-		public int compare(SearchNode o1, SearchNode o2) {
-			return (int) (o1.getAction().getEval() - o2.getAction().getEval());
+		public int compare(Node<Action> o1, Node<Action> o2) {
+			return (int) (o1.getVal().getEval() - o2.getVal().getEval());
 		}
 	};
 
 	public Player() {
-		this(Color.RED);
+		this(Color.RED, 1, 1);
 	}
 
-	public Player(Color c) {
+	public Player(Color c, int cutoff, int task) {
 		this.color = c;
+		this.task = task;
+		if (task == 1 || this instanceof ConfederationPlayer) {
+			this.cutoffLevel = 1;
+		} else {
+			this.cutoffLevel = cutoff;
+		}
 	}
 
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
+		return color == Color.RED ? "Union" : "Confederacy";
 	}
 
 	/**
@@ -115,38 +116,16 @@ public abstract class Player {
 
 	protected void greedyEvaluation() {
 		GameState state = GameState.getInstance();
-		resetVisitingStateofNode(state);
-
-		List<City> cities = null;
-		if (this instanceof UnionPlayer) {
-			cities = state.getUnionCities();
-		} else {
-			cities = state.getConfederateCities();
-		}
-
-		Action dummy = new Action(state, this, null, 0);
-		SearchNode root = new SearchNode(dummy, MiniMax.MAX);
-
-		Queue<SearchNode> queue = new LinkedList<SearchNode>();
-		queue.add(root);
-
-		// for evaluating the forced march strategy
-		performForcedMarch(cities, queue);
-
-		// XXX a hack to ensure that the root node is available for the
-		// paratroop drop operation.
-		((LinkedList<SearchNode>) queue).addFirst(root);
-
-		// evaluate the paratroop drop startegy
-		performParatroopDrop(queue);
+		SearchNode root = buildSearchTree(state);
 
 		// sort the Actions based on the eval value
-		SearchNode maxAct = Collections.max(queue, nodeComparator);
+		Node<Action> maxAct = Collections.max(root.getAdjacencyList(),
+				nodeComparator);
 
-		state.getUpdateCities(maxAct.getAction().getUpdatedCitiesList());
+		state.getUpdateCities(maxAct.getVal().getUpdatedCitiesList());
 		state.incrementTurn();
 		try {
-			printMoves(getResultLogs(maxAct.getAction()));
+			printMoves(getResultLogs(maxAct.getVal()));
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
@@ -183,11 +162,6 @@ public abstract class Player {
 					node.setDepth(root.getDepth() + 1);
 					root.addEdge(node);
 					queue.add(node);
-					try {
-						printLogs(act.getLog());
-					} catch (IOException e1) {
-						System.out.println(e1.getMessage());
-					}
 					x.setState(State.VISITED);
 				}
 			}
@@ -219,11 +193,6 @@ public abstract class Player {
 			node.setDepth(root.getDepth() + 1);
 			root.addEdge(node);
 			queue.add(node);
-			try {
-				printLogs(act.getLog());
-			} catch (IOException e) {
-				System.out.println(e.getMessage());
-			}
 		}
 	}
 
@@ -284,5 +253,62 @@ public abstract class Player {
 		for (City c : cities) {
 			c.setState(State.UNVIISTED);
 		}
+	}
+
+	/**
+	 * This method builds the search tree.
+	 */
+	protected SearchNode buildSearchTree(GameState originalState) {
+		List<City> cities = null;
+		if (this instanceof UnionPlayer) {
+			cities = originalState.getUnionCities();
+		} else {
+			cities = originalState.getConfederateCities();
+		}
+
+		Action dummy = new Action(originalState, this, null, 0);
+		SearchNode root = new SearchNode(dummy, MiniMax.MAX);
+
+		Queue<SearchNode> queue = new LinkedList<SearchNode>();
+		queue.add(root);
+		while (!queue.isEmpty()) {
+
+			SearchNode node = queue.peek();
+			resetVisitingStateofNode(node.getAction().getGameState());
+
+			// write the breaking condition
+			// 1. if it has reached the cut off depth
+			// 2. of if the game has reached it end
+			if (node.getDepth() == cutoffLevel
+					|| node.getAction().getGameState().isNoMoreMoves()) {
+				break;
+			}
+
+			performForcedMarch(cities, queue);
+
+			// XXX a hack to ensure that the root node is available for the
+			// paratroop drop operation.
+			((LinkedList<SearchNode>) queue).addFirst(node);
+
+			performParatroopDrop(queue);
+
+		}
+
+		return root;
+	}
+
+	/**
+	 * @return the cutoffLevel
+	 */
+	public int getCutoffLevel() {
+		return cutoffLevel;
+	}
+
+	/**
+	 * @param cutoffLevel
+	 *            the cutoffLevel to set
+	 */
+	public void setCutoffLevel(int cutoffLevel) {
+		this.cutoffLevel = cutoffLevel;
 	}
 }
