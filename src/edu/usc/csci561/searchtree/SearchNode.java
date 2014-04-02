@@ -127,7 +127,7 @@ public class SearchNode extends Node<Action> {
 			buff.append("Paratroop Drop,");
 		}
 		buff.append(getVal().getEval());
-		buff.append(getAdjacencyList());
+		//buff.append(getAdjacencyList());
 		buff.append("]");
 		return buff.toString();
 	}

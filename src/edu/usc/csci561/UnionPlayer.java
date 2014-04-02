@@ -10,6 +10,7 @@ import edu.usc.csci561.data.Color;
 import edu.usc.csci561.data.GameState;
 import edu.usc.csci561.data.Node;
 import edu.usc.csci561.data.Player;
+import edu.usc.csci561.searchtree.MiniMax;
 import edu.usc.csci561.searchtree.SearchNode;
 
 /**
@@ -46,7 +47,7 @@ public class UnionPlayer extends Player {
 	 */
 	private void alphaBetaPruningEvaluation() {
 		GameState state = GameState.getInstance();
-		SearchNode root = buildSearchTree(state);
+		SearchNode root = buildSearchTree(state, MiniMax.MAX);
 		int val = maxOp(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
 		Action action = null;
@@ -75,7 +76,7 @@ public class UnionPlayer extends Player {
 	 */
 	private void minimaxEvaluation() {
 		GameState state = GameState.getInstance();
-		SearchNode root = buildSearchTree(state);
+		SearchNode root = buildSearchTree(state, MiniMax.MAX);
 		int val = maxOp(root);
 		Action action = null;
 		for (Node<Action> n : root.getAdjacencyList()) {

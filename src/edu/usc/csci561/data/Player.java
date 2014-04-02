@@ -116,7 +116,15 @@ public abstract class Player {
 
 	protected void greedyEvaluation() {
 		GameState state = GameState.getInstance();
-		SearchNode root = buildSearchTree(state);
+
+		MiniMax type = null;
+		if (this instanceof UnionPlayer) {
+			type = MiniMax.MAX;
+		} else {
+			type = MiniMax.MIN;
+		}
+
+		SearchNode root = buildSearchTree(state, type);
 
 		// sort the Actions based on the eval value
 		Node<Action> maxAct = Collections.max(root.getAdjacencyList(),
@@ -258,16 +266,9 @@ public abstract class Player {
 	/**
 	 * This method builds the search tree.
 	 */
-	protected SearchNode buildSearchTree(GameState originalState) {
-		List<City> cities = null;
-		if (this instanceof UnionPlayer) {
-			cities = originalState.getUnionCities();
-		} else {
-			cities = originalState.getConfederateCities();
-		}
-
+	protected SearchNode buildSearchTree(GameState originalState, MiniMax type) {
 		Action dummy = new Action(originalState, this, null, 0);
-		SearchNode root = new SearchNode(dummy, MiniMax.MAX);
+		SearchNode root = new SearchNode(dummy, type);
 
 		Queue<SearchNode> queue = new LinkedList<SearchNode>();
 		queue.add(root);
@@ -275,6 +276,13 @@ public abstract class Player {
 
 			SearchNode node = queue.peek();
 			resetVisitingStateofNode(node.getAction().getGameState());
+
+			List<City> cities = null;
+			if (node.getType() == MiniMax.MAX) {
+				cities = node.getAction().getGameState().getUnionCities();
+			} else {
+				cities = node.getAction().getGameState().getConfederateCities();
+			}
 
 			// write the breaking condition
 			// 1. if it has reached the cut off depth
