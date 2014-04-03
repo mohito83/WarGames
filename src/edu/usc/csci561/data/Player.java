@@ -5,6 +5,7 @@ package edu.usc.csci561.data;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -160,6 +161,7 @@ public abstract class Player {
 	protected void performForcedMarch(List<City> cities, Queue<SearchNode> queue) {
 		SearchNode root = queue.remove();
 		GameState state = root.getAction().getGameState();
+		List<SearchNode> tempList = new ArrayList<SearchNode>();
 		for (City c : cities) {
 			List<Node<String>> adjList = c.getAdjacencyList();
 			for (Node<String> e : adjList) {
@@ -179,11 +181,23 @@ public abstract class Player {
 						node.setType(MiniMax.MAX);
 					}
 					node.setDepth(root.getDepth() + 1);
-					root.addEdge(node);
-					queue.add(node);
+					tempList.add(node);
 					x.setState(State.VISITED);
 				}
 			}
+		}
+
+		Collections.sort(tempList, new Comparator<SearchNode>() {
+
+			@Override
+			public int compare(SearchNode o1, SearchNode o2) {
+				return o1.getAction().getDestination().getVal()
+						.compareTo(o2.getAction().getDestination().getVal());
+			}
+		});
+		for (SearchNode node : tempList) {
+			root.addEdge(node);
+			queue.add(node);
 		}
 	}
 
@@ -298,7 +312,6 @@ public abstract class Player {
 			// write the breaking condition
 			// 1. if it has reached the cut off depth
 			// 2. of if the game has reached it end
-
 			if (node.getDepth() >= cutoffLevel) {
 				break;
 			}
@@ -341,16 +354,16 @@ public abstract class Player {
 			buff.append(",");
 			buff.append(node.getDepth());
 			buff.append(",");
-			int val = node.getEval();
-			if (val == Integer.MAX_VALUE)
-				buff.append("Infinity");
-			else if (val == Integer.MIN_VALUE)
-				buff.append("-Infinity");
-			else
-				buff.append((double) val);
 		} else {
-			buff.append("N/A,N/A,N/A,0,-Infinity");
+			buff.append("N/A,N/A,N/A,0,");
 		}
+		int val = node.getEval();
+		if (val == Integer.MAX_VALUE)
+			buff.append("Infinity");
+		else if (val == Integer.MIN_VALUE)
+			buff.append("-Infinity");
+		else
+			buff.append((double) val);
 		buff.append(System.getProperty("line.separator"));
 
 		return buff.toString();

@@ -3,6 +3,8 @@
  */
 package edu.usc.csci561;
 
+import java.util.List;
+
 import edu.usc.csci561.data.Action;
 import edu.usc.csci561.data.Color;
 import edu.usc.csci561.data.GameState;
@@ -97,10 +99,15 @@ public class UnionPlayer extends Player {
 
 		root.setEval(Integer.MAX_VALUE);
 		printLogs(getLog(root));
-		for (Node<Action> n : root.getAdjacencyList()) {
+		List<Node<Action>> adjList = root.getAdjacencyList();
+		int i = 1;
+		for (Node<Action> n : adjList) {
 			int max = maxOp((SearchNode) n);
 			printLogs(getLog((SearchNode) n));
 			root.setEval(Math.min(root.getEval(), max));
+			if (i < adjList.size())
+				printLogs(getLog(root));
+			i++;
 		}
 		return root.getEval();
 	}
@@ -114,17 +121,24 @@ public class UnionPlayer extends Player {
 
 		root.setEval(Integer.MIN_VALUE);
 		printLogs(getLog(root));
-		for (Node<Action> n : root.getAdjacencyList()) {
+		List<Node<Action>> adjList = root.getAdjacencyList();
+		int i = 1;
+		for (Node<Action> n : adjList) {
 			int min = minOp((SearchNode) n);
 			printLogs(getLog((SearchNode) n));
 			root.setEval(Math.max(root.getEval(), min));
+			if (i < adjList.size())
+				printLogs(getLog(root));
+			i++;
 		}
 		return root.getEval();
 	}
 
 	private int minOp(SearchNode root, int alpha, int beta) {
 		if (root.getAdjacencyList().size() == 0) {
-			return (int) root.getAction().getEval();
+			int eval = (int) root.getAction().getEval();
+			root.setEval(eval);
+			return eval;
 		}
 
 		root.setEval(Integer.MAX_VALUE);
@@ -141,7 +155,9 @@ public class UnionPlayer extends Player {
 
 	private int maxOp(SearchNode root, int alpha, int beta) {
 		if (root.getAdjacencyList().size() == 0) {
-			return (int) root.getAction().getEval();
+			int eval = (int) root.getAction().getEval();
+			root.setEval(eval);
+			return eval;
 		}
 
 		root.setEval(Integer.MIN_VALUE);
