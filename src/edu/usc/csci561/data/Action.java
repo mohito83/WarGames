@@ -2,21 +2,21 @@ package edu.usc.csci561.data;
 
 import java.util.List;
 
-import edu.usc.csci561.UnionPlayer;
+import edu.usc.csci561.searchtree.MiniMax;
 
 public class Action {
 	private City destination;
 	private double eval;
 	private int depth;
 	private GameState gameState;
-	private Player player;
+	private MiniMax player;
 	private boolean isForcedMarch;
 
 	public Action(City c) {
 		this.destination = c;
 	}
 
-	public Action(GameState state, Player player, City c, int depth) {
+	public Action(GameState state, MiniMax player, City c, int depth) {
 		this(c);
 		this.depth = depth;
 		this.gameState = state;
@@ -60,7 +60,6 @@ public class Action {
 		return depth;
 	}
 
-
 	/**
 	 * This method evaluates the state of the game for the given player.
 	 */
@@ -69,7 +68,7 @@ public class Action {
 
 		eval = 0;
 		for (City c : cities) {
-			if (player instanceof UnionPlayer) {
+			if (player == MiniMax.MAX) {
 				if (c.getOccupation() == Occupation.UNION) {
 					eval += c.getResourceValue();
 				} else if (c.getOccupation() == Occupation.CONFEDERATE) {
@@ -91,7 +90,7 @@ public class Action {
 	 */
 	public void performParatroopDrop() {
 		isForcedMarch = false;
-		if (player instanceof UnionPlayer) {
+		if (player == MiniMax.MAX) {
 			destination.setOccupation(Occupation.UNION);
 		} else {
 			destination.setOccupation(Occupation.CONFEDERATE);
@@ -105,7 +104,7 @@ public class Action {
 		for (Node<String> n : nodes) {
 			City c = (City) n;
 			if (c.getOccupation() != Occupation.NEUTRAL) {
-				if (player instanceof UnionPlayer) {
+				if (player == MiniMax.MAX) {
 					c.setOccupation(Occupation.UNION);
 				} else {
 					c.setOccupation(Occupation.CONFEDERATE);
@@ -135,7 +134,7 @@ public class Action {
 	/**
 	 * @return the player
 	 */
-	public Player getPlayer() {
+	public MiniMax getPlayer() {
 		return player;
 	}
 }

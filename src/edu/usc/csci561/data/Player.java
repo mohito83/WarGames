@@ -76,12 +76,20 @@ public abstract class Player {
 
 	public abstract void nextMove();
 
-	public void printLogs(String str) throws IOException {
-		logWriter.write(str);
+	public void printLogs(String str) {
+		try {
+			logWriter.write(str);
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
-	public void printMoves(String str) throws IOException {
-		movesWriter.write(str);
+	public void printMoves(String str) {
+		try {
+			movesWriter.write(str);
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	/**
@@ -126,17 +134,20 @@ public abstract class Player {
 
 		SearchNode root = buildSearchTree(state, type);
 
+		// print logs only in case of union player
+		if (this instanceof UnionPlayer) {
+			for (Node<Action> node : root.getAdjacencyList()) {
+				printLogs(getLog((SearchNode) node));
+			}
+		}
+
 		// sort the Actions based on the eval value
 		Node<Action> maxAct = Collections.max(root.getAdjacencyList(),
 				nodeComparator);
 
 		state.getUpdateCities(maxAct.getVal().getUpdatedCitiesList());
 		state.incrementTurn();
-		try {
-			printMoves(getResultLogs(maxAct.getVal()));
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
+		printMoves(getResultLogs(maxAct.getVal()));
 	}
 
 	/**
@@ -156,7 +167,7 @@ public abstract class Player {
 				if (x.getOccupation() == Occupation.NEUTRAL
 						&& x.getState() == State.UNVIISTED) {
 					GameState clonedState = state.clone();
-					Action act = new Action(clonedState, this,
+					Action act = new Action(clonedState, root.getType(),
 							clonedState.getCityForName(x.getVal()),
 							root.getDepth() + 1);
 					act.performForcedMarch();
@@ -188,7 +199,7 @@ public abstract class Player {
 		List<City> cities = state.getNeutralCities();
 		for (City c : cities) {
 			GameState clonedState = state.clone();
-			Action act = new Action(clonedState, this,
+			Action act = new Action(clonedState, root.getType(),
 					clonedState.getCityForName(c.getVal()), root.getDepth() + 1);
 			act.performParatroopDrop();
 			act.eval();
@@ -267,7 +278,7 @@ public abstract class Player {
 	 * This method builds the search tree.
 	 */
 	protected SearchNode buildSearchTree(GameState originalState, MiniMax type) {
-		Action dummy = new Action(originalState, this, null, 0);
+		Action dummy = new Action(originalState, type, null, 0);
 		SearchNode root = new SearchNode(dummy, type);
 
 		Queue<SearchNode> queue = new LinkedList<SearchNode>();
@@ -287,8 +298,8 @@ public abstract class Player {
 			// write the breaking condition
 			// 1. if it has reached the cut off depth
 			// 2. of if the game has reached it end
-			if (node.getDepth() == cutoffLevel
-					|| node.getAction().getGameState().isNoMoreMoves()) {
+
+			if (node.getDepth() >= cutoffLevel) {
 				break;
 			}
 
@@ -303,6 +314,46 @@ public abstract class Player {
 		}
 
 		return root;
+	}
+
+	/**
+	 * This method generates the log
+	 * 
+	 * @return
+	 */
+	public String getLog(SearchNode node) {
+		StringBuffer buff = new StringBuffer();
+		City destination = node.getAction().getDestination();
+		if (destination != null) {
+			if (node.getAction().getPlayer() == MiniMax.MAX) {
+				buff.append("Union,");
+			} else {
+				buff.append("Confederacy,");
+			}
+
+			if (node.getAction().isForcedMarch()) {
+				buff.append("Force March,");
+			} else {
+				buff.append("Paratroop Drop,");
+			}
+
+			buff.append(destination.getVal());
+			buff.append(",");
+			buff.append(node.getDepth());
+			buff.append(",");
+			int val = node.getEval();
+			if (val == Integer.MAX_VALUE)
+				buff.append("Infinity");
+			else if (val == Integer.MIN_VALUE)
+				buff.append("-Infinity");
+			else
+				buff.append((double) val);
+		} else {
+			buff.append("N/A,N/A,N/A,0,-Infinity");
+		}
+		buff.append(System.getProperty("line.separator"));
+
+		return buff.toString();
 	}
 
 	/**

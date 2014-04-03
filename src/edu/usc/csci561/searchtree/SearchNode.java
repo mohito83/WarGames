@@ -3,7 +3,6 @@
  */
 package edu.usc.csci561.searchtree;
 
-import edu.usc.csci561.UnionPlayer;
 import edu.usc.csci561.data.Action;
 import edu.usc.csci561.data.Node;
 
@@ -86,7 +85,7 @@ public class SearchNode extends Node<Action> {
 	 */
 	public String getLog() {
 		StringBuffer buff = new StringBuffer();
-		if (this.getVal().getPlayer() instanceof UnionPlayer) {
+		if (this.getAction().getPlayer() == MiniMax.MAX) {
 			buff.append("Union,");
 		} else {
 			buff.append("Confedracy,");
@@ -127,7 +126,9 @@ public class SearchNode extends Node<Action> {
 			buff.append("Paratroop Drop,");
 		}
 		buff.append(getVal().getEval());
-		//buff.append(getAdjacencyList());
+		buff.append(",");
+		buff.append(getType());
+		// buff.append(getAdjacencyList());
 		buff.append("]");
 		return buff.toString();
 	}
