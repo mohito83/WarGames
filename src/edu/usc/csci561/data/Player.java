@@ -80,6 +80,7 @@ public abstract class Player {
 	public void printLogs(String str) {
 		try {
 			logWriter.write(str);
+			logWriter.write(System.getProperty("line.separator"));
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
@@ -136,8 +137,10 @@ public abstract class Player {
 		SearchNode root = buildSearchTree(state, type);
 
 		// print logs only in case of union player
-		if (this instanceof UnionPlayer) {
-			for (Node<Action> node : root.getAdjacencyList()) {
+
+		for (Node<Action> node : root.getAdjacencyList()) {
+			node.getVal().eval();
+			if (this instanceof UnionPlayer) {
 				printLogs(getLog((SearchNode) node));
 			}
 		}
@@ -173,7 +176,7 @@ public abstract class Player {
 							clonedState.getCityForName(x.getVal()),
 							root.getDepth() + 1);
 					act.performForcedMarch();
-					act.eval();
+					// act.eval();
 					SearchNode node = new SearchNode(act);
 					if (root.getType() == MiniMax.MAX) {
 						node.setType(MiniMax.MIN);
@@ -216,7 +219,7 @@ public abstract class Player {
 			Action act = new Action(clonedState, root.getType(),
 					clonedState.getCityForName(c.getVal()), root.getDepth() + 1);
 			act.performParatroopDrop();
-			act.eval();
+			// act.eval();
 			SearchNode node = new SearchNode(act);
 			if (root.getType() == MiniMax.MAX) {
 				node.setType(MiniMax.MIN);
@@ -312,7 +315,8 @@ public abstract class Player {
 			// write the breaking condition
 			// 1. if it has reached the cut off depth
 			// 2. of if the game has reached it end
-			if (node.getDepth() >= cutoffLevel) {
+			if (node.getDepth() >= cutoffLevel
+					|| node.getAction().getGameState().isNoMoreMoves()) {
 				break;
 			}
 
@@ -364,7 +368,6 @@ public abstract class Player {
 			buff.append("-Infinity");
 		else
 			buff.append((double) val);
-		buff.append(System.getProperty("line.separator"));
 
 		return buff.toString();
 	}

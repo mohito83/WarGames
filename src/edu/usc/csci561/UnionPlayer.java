@@ -74,6 +74,7 @@ public class UnionPlayer extends Player {
 		GameState state = GameState.getInstance();
 		SearchNode root = buildSearchTree(state, MiniMax.MAX);
 		int val = maxOp(root);
+		printLogs(getLog(root));
 		Action action = null;
 		for (Node<Action> n : root.getAdjacencyList()) {
 			if (((SearchNode) n).getEval() == val) {
@@ -92,6 +93,7 @@ public class UnionPlayer extends Player {
 
 	private int minOp(SearchNode root) {
 		if (root.getAdjacencyList().size() == 0) {
+			root.getAction().eval();
 			int eval = (int) root.getAction().getEval();
 			root.setEval(eval);
 			return eval;
@@ -114,6 +116,7 @@ public class UnionPlayer extends Player {
 
 	private int maxOp(SearchNode root) {
 		if (root.getAdjacencyList().size() == 0) {
+			root.getAction().eval();
 			int eval = (int) root.getAction().getEval();
 			root.setEval(eval);
 			return eval;
@@ -136,14 +139,17 @@ public class UnionPlayer extends Player {
 
 	private int minOp(SearchNode root, int alpha, int beta) {
 		if (root.getAdjacencyList().size() == 0) {
+			root.getAction().eval();
 			int eval = (int) root.getAction().getEval();
 			root.setEval(eval);
 			return eval;
 		}
 
 		root.setEval(Integer.MAX_VALUE);
+		printLogs(getLog2(root, alpha, beta));
 		for (Node<Action> n : root.getAdjacencyList()) {
 			int max = maxOp((SearchNode) n, alpha, beta);
+			printLogs(getLog2((SearchNode) n, alpha, beta));
 			root.setEval(Math.min(root.getEval(), max));
 			if (root.getEval() <= alpha) {
 				return root.getEval();
@@ -155,14 +161,17 @@ public class UnionPlayer extends Player {
 
 	private int maxOp(SearchNode root, int alpha, int beta) {
 		if (root.getAdjacencyList().size() == 0) {
+			root.getAction().eval();
 			int eval = (int) root.getAction().getEval();
 			root.setEval(eval);
 			return eval;
 		}
 
 		root.setEval(Integer.MIN_VALUE);
+		printLogs(getLog2(root, alpha, beta));
 		for (Node<Action> n : root.getAdjacencyList()) {
 			int min = minOp((SearchNode) n, alpha, beta);
+			printLogs(getLog2((SearchNode) n, alpha, beta));
 			root.setEval(Math.max(root.getEval(), min));
 			if (root.getEval() >= beta) {
 				return root.getEval();
@@ -172,4 +181,14 @@ public class UnionPlayer extends Player {
 		return root.getEval();
 	}
 
+	private String getLog2(SearchNode node, int alpha, int beta) {
+		StringBuffer buff = new StringBuffer();
+		buff.append(getLog(node));
+		buff.append(",");
+		buff.append(alpha);
+		buff.append(",");
+		buff.append(beta);
+		return buff.toString();
+
+	}
 }
