@@ -48,8 +48,8 @@ public class UnionPlayer extends Player {
 	private void alphaBetaPruningEvaluation() {
 		GameState state = GameState.getInstance();
 		SearchNode root = buildSearchTree(state, MiniMax.MAX);
-		int val = maxOp(root, new Integer(Integer.MIN_VALUE), new Integer(
-				Integer.MAX_VALUE));
+		int val = maxOp(root, new MutableInteger(Integer.MIN_VALUE),
+				new MutableInteger(Integer.MAX_VALUE));
 
 		Action action = null;
 		for (Node<Action> n : root.getAdjacencyList()) {
@@ -158,7 +158,7 @@ public class UnionPlayer extends Player {
 	 * @param beta
 	 * @return
 	 */
-	private int minOp(SearchNode root, Integer alpha, Integer beta) {
+	private int minOp(SearchNode root, MutableInteger alpha, MutableInteger beta) {
 		List<Node<Action>> adjList = root.getAdjacencyList();
 		if (adjList.size() == 0) {
 			root.getAction().eval();
@@ -174,11 +174,11 @@ public class UnionPlayer extends Player {
 			int max = maxOp((SearchNode) n, alpha, beta);
 			printLogs(getLog2((SearchNode) n, alpha, beta, false));
 			root.setEval(Math.min(root.getEval(), max));
-			if (root.getEval() <= alpha) {
+			if (root.getEval() <= alpha.intValue()) {
 				printLogs(getLog2(root, alpha, beta, true));
 				return root.getEval();
 			}
-			beta = new Integer(Math.min(beta.intValue(), root.getEval()));
+			beta.setValue(Math.min(beta.intValue(), root.getEval()));
 			if (i < adjList.size())
 				printLogs(getLog2(root, alpha, beta, false));
 			i++;
@@ -194,7 +194,7 @@ public class UnionPlayer extends Player {
 	 * @param beta
 	 * @return
 	 */
-	private int maxOp(SearchNode root, Integer alpha, Integer beta) {
+	private int maxOp(SearchNode root, MutableInteger alpha, MutableInteger beta) {
 		List<Node<Action>> adjList = root.getAdjacencyList();
 		if (adjList.size() == 0) {
 			root.getAction().eval();
@@ -210,11 +210,11 @@ public class UnionPlayer extends Player {
 			int min = minOp((SearchNode) n, alpha, beta);
 			printLogs(getLog2((SearchNode) n, alpha, beta, false));
 			root.setEval(Math.max(root.getEval(), min));
-			if (root.getEval() >= beta) {
+			if (root.getEval() >= beta.intValue()) {
 				printLogs(getLog2(root, alpha, beta, true));
 				return root.getEval();
 			}
-			alpha = new Integer(Math.max(alpha.intValue(), root.getEval()));
+			alpha.setValue(Math.max(alpha.intValue(), root.getEval()));
 			if (i < adjList.size())
 				printLogs(getLog2(root, alpha, beta, false));
 			i++;
@@ -222,8 +222,8 @@ public class UnionPlayer extends Player {
 		return root.getEval();
 	}
 
-	private String getLog2(SearchNode node, Integer alpha, Integer beta,
-			boolean isCutOff) {
+	private String getLog2(SearchNode node, MutableInteger alpha,
+			MutableInteger beta, boolean isCutOff) {
 		StringBuffer buff = new StringBuffer();
 		buff.append(getLog(node));
 		buff.append(",");
@@ -236,5 +236,32 @@ public class UnionPlayer extends Player {
 		}
 		return buff.toString();
 
+	}
+}
+
+/**
+ * This is a mutable integer class which helps in using int primitive to be used
+ * as reference while passing between methods.
+ * 
+ * @author mohit aggarwl
+ * 
+ */
+class MutableInteger {
+	private int val;
+
+	public MutableInteger() {
+		this.val = 0;
+	}
+
+	public MutableInteger(int v) {
+		this.val = v;
+	}
+
+	public int intValue() {
+		return this.val;
+	}
+
+	public void setValue(int val) {
+		this.val = val;
 	}
 }
