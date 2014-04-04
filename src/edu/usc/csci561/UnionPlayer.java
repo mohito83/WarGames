@@ -91,6 +91,12 @@ public class UnionPlayer extends Player {
 		printMoves(getResultLogs(action));
 	}
 
+	/**
+	 * Min operation for Minimax algorithm
+	 * 
+	 * @param root
+	 * @return
+	 */
 	private int minOp(SearchNode root) {
 		if (root.getAdjacencyList().size() == 0) {
 			root.getAction().eval();
@@ -114,6 +120,12 @@ public class UnionPlayer extends Player {
 		return root.getEval();
 	}
 
+	/**
+	 * Max op for minimax algorithm
+	 * 
+	 * @param root
+	 * @return
+	 */
 	private int maxOp(SearchNode root) {
 		if (root.getAdjacencyList().size() == 0) {
 			root.getAction().eval();
@@ -137,8 +149,17 @@ public class UnionPlayer extends Player {
 		return root.getEval();
 	}
 
+	/**
+	 * Min op or alpha beta pruning algorithm
+	 * 
+	 * @param root
+	 * @param alpha
+	 * @param beta
+	 * @return
+	 */
 	private int minOp(SearchNode root, int alpha, int beta) {
-		if (root.getAdjacencyList().size() == 0) {
+		List<Node<Action>> adjList = root.getAdjacencyList();
+		if (adjList.size() == 0) {
 			root.getAction().eval();
 			int eval = (int) root.getAction().getEval();
 			root.setEval(eval);
@@ -146,21 +167,35 @@ public class UnionPlayer extends Player {
 		}
 
 		root.setEval(Integer.MAX_VALUE);
-		printLogs(getLog2(root, alpha, beta));
-		for (Node<Action> n : root.getAdjacencyList()) {
+		printLogs(getLog2(root, alpha, beta, false));
+		int i = 1;
+		for (Node<Action> n : adjList) {
 			int max = maxOp((SearchNode) n, alpha, beta);
-			printLogs(getLog2((SearchNode) n, alpha, beta));
+			printLogs(getLog2((SearchNode) n, alpha, beta, false));
 			root.setEval(Math.min(root.getEval(), max));
 			if (root.getEval() <= alpha) {
+				printLogs(getLog2(root, alpha, beta, true));
 				return root.getEval();
 			}
 			beta = Math.min(beta, root.getEval());
+			if (i < adjList.size())
+				printLogs(getLog2(root, alpha, beta, false));
+			i++;
 		}
 		return root.getEval();
 	}
 
+	/**
+	 * Max op for the alpha beta pruning algorithm
+	 * 
+	 * @param root
+	 * @param alpha
+	 * @param beta
+	 * @return
+	 */
 	private int maxOp(SearchNode root, int alpha, int beta) {
-		if (root.getAdjacencyList().size() == 0) {
+		List<Node<Action>> adjList = root.getAdjacencyList();
+		if (adjList.size() == 0) {
 			root.getAction().eval();
 			int eval = (int) root.getAction().getEval();
 			root.setEval(eval);
@@ -168,26 +203,36 @@ public class UnionPlayer extends Player {
 		}
 
 		root.setEval(Integer.MIN_VALUE);
-		printLogs(getLog2(root, alpha, beta));
-		for (Node<Action> n : root.getAdjacencyList()) {
+		printLogs(getLog2(root, alpha, beta, false));
+		int i = 1;
+		for (Node<Action> n : adjList) {
 			int min = minOp((SearchNode) n, alpha, beta);
-			printLogs(getLog2((SearchNode) n, alpha, beta));
+			printLogs(getLog2((SearchNode) n, alpha, beta, false));
 			root.setEval(Math.max(root.getEval(), min));
 			if (root.getEval() >= beta) {
+				printLogs(getLog2(root, alpha, beta, true));
 				return root.getEval();
 			}
 			alpha = Math.max(alpha, root.getEval());
+			if (i < adjList.size())
+				printLogs(getLog2(root, alpha, beta, false));
+			i++;
 		}
 		return root.getEval();
 	}
 
-	private String getLog2(SearchNode node, int alpha, int beta) {
+	private String getLog2(SearchNode node, int alpha, int beta,
+			boolean isCutOff) {
 		StringBuffer buff = new StringBuffer();
 		buff.append(getLog(node));
 		buff.append(",");
-		buff.append(alpha);
+		buff.append(valCalc(alpha));
 		buff.append(",");
-		buff.append(beta);
+		buff.append(valCalc(beta));
+		if (isCutOff) {
+			buff.append(",");
+			buff.append("CUT-OFF");
+		}
 		return buff.toString();
 
 	}

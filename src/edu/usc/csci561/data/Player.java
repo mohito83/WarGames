@@ -361,14 +361,22 @@ public abstract class Player {
 		} else {
 			buff.append("N/A,N/A,N/A,0,");
 		}
+
 		int val = node.getEval();
+		buff.append(valCalc(val));
+
+		return buff.toString();
+	}
+
+	protected String valCalc(int val) {
+		StringBuffer buff = new StringBuffer();
+
 		if (val == Integer.MAX_VALUE)
 			buff.append("Infinity");
 		else if (val == Integer.MIN_VALUE)
 			buff.append("-Infinity");
 		else
 			buff.append((double) val);
-
 		return buff.toString();
 	}
 
