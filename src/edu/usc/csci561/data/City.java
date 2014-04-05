@@ -59,13 +59,6 @@ public class City extends Node<String> implements Cloneable {
 		this.resourceValue = value;
 	}
 
-	public String toString() {
-		StringBuffer buff = new StringBuffer();
-		buff.append("[" + val + ", E=" + E.size() + ", " + resourceValue + ", "
-				+ occupation + "]");
-		return buff.toString();
-	}
-
 	public City clone() {
 		City c = new City(getVal());
 		c.setState(state);

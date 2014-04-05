@@ -64,7 +64,7 @@ public class Action {
 	 * This method evaluates the state of the game for the given player.
 	 */
 	public void eval() {
-		List<City> cities = gameState.getAllCities();// null;
+		List<City> cities = gameState.getAllCities();
 
 		eval = 0;
 		for (City c : cities) {

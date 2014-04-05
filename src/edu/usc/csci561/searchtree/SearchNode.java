@@ -15,14 +15,17 @@ public class SearchNode extends Node<Action> {
 	private MiniMax type;
 	private int depth;
 	private int eval;
+	private boolean isCutOff;
 
 	public SearchNode(Action a) {
 		super(a);
+		isCutOff = false;
 	}
 
 	public SearchNode(Action a, MiniMax type) {
 		super(a);
 		this.type = type;
+		isCutOff = false;
 	}
 
 	public Action getAction() {
@@ -131,5 +134,20 @@ public class SearchNode extends Node<Action> {
 		// buff.append(getAdjacencyList());
 		buff.append("]");
 		return buff.toString();
+	}
+
+	/**
+	 * @return the isCutOff
+	 */
+	public boolean isCutOff() {
+		return isCutOff;
+	}
+
+	/**
+	 * @param isCutOff
+	 *            the isCutOff to set
+	 */
+	public void setCutOff(boolean isCutOff) {
+		this.isCutOff = isCutOff;
 	}
 }
