@@ -26,15 +26,22 @@ public class UnionPlayer extends Player {
 	@Override
 	public void nextMove() {
 		System.out.println("Union Player");
+		GameState state = GameState.getInstance();
 		switch (this.task) {
 		case 1:
 			greedyEvaluation();
 			break;
 		case 2:
-			minimaxEvaluation();
+			if (state.getNeutralCities().size() > 2)
+				minimaxEvaluation();
+			else
+				greedyEvaluation();
 			break;
 		case 3:
-			alphaBetaPruningEvaluation();
+			if (state.getNeutralCities().size() > 2)
+				alphaBetaPruningEvaluation();
+			else
+				greedyEvaluation();
 			break;
 
 		}

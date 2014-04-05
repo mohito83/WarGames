@@ -139,9 +139,12 @@ public abstract class Player {
 		// print logs only in case of union player
 
 		for (Node<Action> node : root.getAdjacencyList()) {
-			node.getVal().eval();
+
+			SearchNode n = (SearchNode) node;
+			n.getVal().eval();
+			n.setEval((int) n.getAction().getEval());
 			if (this instanceof UnionPlayer) {
-				printLogs(getLog((SearchNode) node));
+				printLogs(getLog(n));
 			}
 		}
 
