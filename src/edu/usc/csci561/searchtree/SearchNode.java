@@ -110,31 +110,6 @@ public class SearchNode extends Node<Action> {
 		return buff.toString();
 	}
 
-	// TODO this method is only for debugging.. remove all such toString() from
-	// the application before submission, as it causes performace issue.
-	public String toString() {
-		StringBuffer buff = new StringBuffer();
-		buff.append("[");
-		buff.append(getVal().getDepth());
-		buff.append(",");
-		if (getVal().getDestination() != null) {
-			buff.append(getVal().getDestination().getVal());
-		} else {
-			buff.append("ROOT");
-		}
-		buff.append(",");
-		if (getVal().isForcedMarch()) {
-			buff.append("Force March,");
-		} else {
-			buff.append("Paratroop Drop,");
-		}
-		buff.append(getVal().getEval());
-		buff.append(",");
-		buff.append(getType());
-		// buff.append(getAdjacencyList());
-		buff.append("]");
-		return buff.toString();
-	}
 
 	/**
 	 * @return the isCutOff
